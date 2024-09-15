@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Http\Requests\LoginRequest;
+use App\Http\Responses\LoginResponse;
 
 class AuthController extends Controller
 {
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): LoginResponse
     {
-        // TODO
+        $credentials = $request->only('login', 'password');
 
-        return response()->json([
-            'status' => 'failure',
-        ]);
+        if ($token = auth()->attempt($credentials)) {
+            return LoginResponse::ok($token);
+        }
+
+        return LoginResponse::error();
     }
 }
